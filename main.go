@@ -25,6 +25,7 @@ func main() {
 	r.GET("/user2_data", handlers.GetUser2Data)
 	r.GET("/user3_data", handlers.GetUser3Data)
 	r.POST("/verify_qr_user3", handlers.VerifyQRForUser3)
+	r.POST("/get_class_users", handlers.GetClassUsersForUser2)
 
 	// Запуск сервера
 	port := config.GetEnv("PORT", "8080")
