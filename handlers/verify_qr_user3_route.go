@@ -21,8 +21,8 @@ type VerifyQRRequest struct {
 
 // VerifyQRForUser3 обрабатывает запрос от user3 на подтверждение QR кода.
 // Принимает API ключ user3 и данные QR. Проверяет API ключ, ищет user1 по QR,
-// и если у найденного user1 поле used == false, обновляет его на true.
-// В ответе возвращается статус true при успехе или false при ошибке.
+// и если у найденного user1 поле used == false, обновляет его на true, а также добавляет
+// текущее время в массив times. В ответе возвращается статус true при успехе или false при ошибке.
 func VerifyQRForUser3(c *gin.Context) {
 	var req VerifyQRRequest
 
@@ -85,8 +85,11 @@ func VerifyQRForUser3(c *gin.Context) {
 		return
 	}
 
-	// Обновляем поле used для найденного user1 на true
-	update := bson.M{"$set": bson.M{"used": true}}
+	// Обновляем поле used для найденного user1 на true и добавляем текущее время в массив times
+	update := bson.M{
+		"$set":  bson.M{"used": true},
+		"$push": bson.M{"times": time.Now()},
+	}
 	updateCtx, updateCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer updateCancel()
 
