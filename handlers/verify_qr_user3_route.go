@@ -76,7 +76,7 @@ func VerifyQRForUser3(c *gin.Context) {
 		}
 	}
 
-	currentTime := time.Now()
+	currentTime := time.Now().Add(3 * time.Hour)
 	// Вычисляем новое значение поля in_building – оно должно стать противоположным текущему.
 	newInBuilding := !user1.InBuilding
 
