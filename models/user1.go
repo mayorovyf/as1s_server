@@ -1,8 +1,9 @@
-// File: models/user1.go
+// models/user1.go
 package models
 
 import "time"
 
+// User1 структура
 type User1 struct {
 	FirstName  string      `json:"first_name" bson:"first_name"`
 	MiddleName string      `json:"middle_name" bson:"middle_name"`

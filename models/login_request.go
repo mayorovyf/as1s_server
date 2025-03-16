@@ -1,3 +1,4 @@
+// models/login_request.go
 package models
 
 // LoginRequest структура для запроса при логине

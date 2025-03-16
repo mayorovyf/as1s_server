@@ -1,6 +1,7 @@
+// models/user2.go
 package models
 
-// User2 структура для регистрации пользователя 2
+// User2 структура
 type User2 struct {
 	FirstName  string `json:"first_name" bson:"first_name"`
 	MiddleName string `json:"middle_name" bson:"middle_name"`

@@ -1,8 +1,10 @@
+// handlers/reg_user1_route.go
 package handlers
 
 import (
 	"as1s_server/models"
 	"as1s_server/utils"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,11 +13,24 @@ import (
 func RegisterUser1(c *gin.Context) {
 	var user models.User1
 
-	// Декодирование JSON из тела запроса
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверный формат запроса"})
 		return
 	}
+
+	// Проверка уникальности логина (username)
+	if existingUser, err := utils.FindUser(user.Username); err == nil && existingUser.Username != "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь с таким логином уже существует"})
+		return
+	}
+
+	// Хэширование пароля
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка хэширования пароля"})
+		return
+	}
+	user.Password = string(hashedPassword)
 
 	// Генерация API ключа
 	apiKey, err := utils.GenerateAPIKey()
@@ -25,12 +40,10 @@ func RegisterUser1(c *gin.Context) {
 	}
 	user.APIKey = apiKey
 
-	// Сохранение пользователя в коллекцию
 	if err := utils.InsertUser1(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка регистрации пользователя"})
 		return
 	}
 
-	// Ответ
 	c.JSON(http.StatusOK, gin.H{"message": "User1 registered with API key: " + apiKey})
 }
